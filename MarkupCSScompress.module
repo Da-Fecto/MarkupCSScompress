@@ -1,7 +1,7 @@
 <?php
 
 /**
- * MarkupStylesProcessor
+ * MarkupCSScompress
  *
  * Minimize and cache all styles from $config->styles and serve 1 one CSS Page back to
  * the browser
@@ -34,11 +34,11 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		return array(
 			'title' => 'MarkupCSScompress',
 			'version' => 001,
-			'summary' => 'Combines all styles from $config->styles compress the output and serve the result back.',
+			'summary' => 'Combines all styles from $config->styles compress the output and serve one link back to the browser.',
 			'author' => 'Martijn Geerts',
 			'href' => '',
 			'singular' => true,
-			'autoload' => true,
+			'autoload' => false,
 			'installs' => array('MarkupCache'),
 		);
 	}
@@ -58,7 +58,7 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 
 	public function init() {
 		// page used for CSS output 
-		$this->cssPage = $this->pages->get('parent=/, template=css');
+		$this->cssPage = $this->pages->get('parent=/, template=MarkupCSScompress');
 		// loop through all $config->styles
 		foreach($this->config->styles as $style) $urls .= $style . "|";
 		// append all css urls on the end of the dynamic css file
@@ -163,20 +163,21 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		$fieldgroup->save();
 	
 		$template = new Template();
-		$template->name = "MarkupCSScompress"; // must be same name as the fieldgroup
+		$template->name = "MarkupCSScompress";
 		$template->label = "Template for the MarkupCSScompress module.";
 		$template->slashUrls = 0;
-		$template->fieldgroup = $fieldgroup;
+		$template->fieldgroup = $templates->fieldgroup->get('MarkupCSScompress');
 		$template->save();
 
 		$linkPage = new Page(); // create new page object
-		$linkPage->template = $t; // set template
+		$linkPage->template = $template; // set template
 		$linkPage->parent = wire("pages")->get("/"); // set the parent 
 		$linkPage->name = 'styles.min.css';
 		$linkPage->title = 'MarkupCSScompress';
 		$linkPage->save();
 		
 	}
+	
 	public function ___uninstall() {
 	
 		
