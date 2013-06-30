@@ -75,7 +75,7 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		//var_dump($path);
 
 		// all styles their own link.
-		if($this->disabled_for_superuser === 1 || $path === null) {
+		if($this->disabled_for_superuser == 1 || $path === null) {
 		
 			$out .= $path === null ? "<!-- Please move MarkupCSScompress.php to the ./site/templates/ folder! -->\n\n\t" : '';	
 			$out .= $this->disabled_for_superuser === 1 ? "<!--  MarkupCSScompress checkbox setting: Caching & concatenating disabled for superusers -->\n\n\t" : ""; 
@@ -161,17 +161,27 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 
 	public function ___install() {
 
-		$fg = new fieldgroup();
-		$fg->name = "MarkupCSScompress";
-		$fg->add("title");
-		$fg->save();
+		$createTpl = true;
+		foreach(wire("templates") as $t) {
+			if($t->name == "MarkupCSScompress") {
+				$createTpl = false;
+				$tpl = $t;
+			}
+		}
+
+		if($createTpl) {
+			$fg = new fieldgroup();
+			$fg->name = "MarkupCSScompress";
+			$fg->add("title");
+			$fg->save();
 	
-		$tpl = new Template();
-		$tpl->name = "MarkupCSScompress";
-		$tpl->label = "Template for the MarkupCSScompress module.";
-		$tpl->slashUrls = 0;
-		$tpl->fieldgroup = $fg;
-		$tpl->save();
+			$tpl = new Template();
+			$tpl->name = "MarkupCSScompress";
+			$tpl->label = "Template for the MarkupCSScompress module.";
+			$tpl->slashUrls = 0;
+			$tpl->fieldgroup = $fg;
+			$tpl->save();
+		}
 
 		$linkPage = new Page(); 
 		$linkPage->template = $tpl;
@@ -184,7 +194,13 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 	
 	public function ___uninstall() {
 	
-		
+		$cssPages = wire('pages')->find('template.name=MarkupCSScompress');
+		if(count($cssPages)) {
+			foreach($cssPages as $p) {
+				$p->delete();	
+			}
+		}
+				
 	}	
 	
 }
