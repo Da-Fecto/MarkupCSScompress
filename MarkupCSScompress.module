@@ -157,21 +157,21 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 
 	public function ___install() {
 
-		$fieldgroup = new Fieldgroup();
-		$fieldgroup->name = "MarkupCSScompress";
-		$fieldgroup->add("title");
-		$fieldgroup->save();
+		$fg = new fieldgroup();
+		$fg->name = "MarkupCSScompress";
+		$fg->add("title");
+		$fg->save();
 	
-		$template = new Template();
-		$template->name = "MarkupCSScompress";
-		$template->label = "Template for the MarkupCSScompress module.";
-		$template->slashUrls = 0;
-		$template->fieldgroup = $templates->fieldgroup->get('MarkupCSScompress');
-		$template->save();
+		$tpl = new Template();
+		$tpl->name = "MarkupCSScompress";
+		$tpl->label = "Template for the MarkupCSScompress module.";
+		$tpl->slashUrls = 0;
+		$tpl->fieldgroup = $fg;
+		$tpl->save();
 
-		$linkPage = new Page(); // create new page object
-		$linkPage->template = $template; // set template
-		$linkPage->parent = wire("pages")->get("/"); // set the parent 
+		$linkPage = new Page(); 
+		$linkPage->template = $tpl;
+		$linkPage->parent = wire("pages")->get("/");
 		$linkPage->name = 'styles.min.css';
 		$linkPage->title = 'MarkupCSScompress';
 		$linkPage->save();
