@@ -34,7 +34,7 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		return array(
 			'title' => 'MarkupCSScompress',
 			'version' => 001,
-			'summary' => 'Combines all styles from $config->styles compress the output and serve one link back to the browser.',
+			'summary' => 'Combines all styles from $config->styles, compress the output and serve one link back to the browser.',
 			'author' => 'Martijn Geerts',
 			'href' => '',
 			'singular' => true,
