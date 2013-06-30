@@ -4,7 +4,7 @@
  * MarkupStylesProcessor
  *
  * Minimize and cache all styles from $config->styles and serve 1 one CSS Page back to
- * the client
+ * the browser
  *
  * usage:
  * 	[1]	Put the MarkupCSScompress.php into the template folder.
@@ -179,17 +179,6 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 	}
 	public function ___uninstall() {
 	
-//		$linkPage = wire('pages')->get('template=MarkupCSScompress');
-//		
-//		if($linkPage->id) {
-//			$linkPage->delete();
-//		}
-//		
-//		$tpl = $templates->get("MarkupCSScompress");
-//
-//		if($tpl->id) {
-//			$tpl->delete();
-//		}
 		
 	}	
 	
