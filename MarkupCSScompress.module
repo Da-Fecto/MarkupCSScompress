@@ -25,9 +25,9 @@
 class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 
 	protected static $defaultConfigData = array(
-		'cache_time' => 0,
+		'cache_time' => 3600,
 		'disabled_for_superuser' => true,
-		'clean_href' => false,
+		'clean_href' => true,
 		); 
 		
 	public static function getModuleInfo() {
@@ -72,10 +72,14 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		
 		$out = "";
 
+		//var_dump($path);
+
 		// all styles their own link.
 		if($this->disabled_for_superuser === 1 || $path === null) {
 		
 			$out .= $path === null ? "<!-- Please move MarkupCSScompress.php to the ./site/templates/ folder! -->\n\n\t" : '';	
+			$out .= $this->disabled_for_superuser === 1 ? "<!--  MarkupCSScompress checkbox setting: Caching & concatenating disabled for superusers -->\n\n\t" : ""; 
+			
 			foreach($this->config->styles as $s) $out .= "<link rel='stylesheet' href='{$s}'>\n\t";
 
 		// clean href, use sessions
