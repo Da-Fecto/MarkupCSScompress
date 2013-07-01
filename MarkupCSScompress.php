@@ -7,9 +7,6 @@ if($modules->isInstalled('MarkupCSScompress') == false) {
 	die();
 }
 
-// php template file incognito
-header("Content-type: text/css;charset: UTF-8");
-
 // check if MarkupCache is installed.
 if($modules->isInstalled('MarkupCache') == false) {
 	echo "body { background: red;}";	
@@ -57,17 +54,33 @@ function compress($css) {
  * Each file get it's own cache file with the URL as it's name.
  *
  */
-foreach($files as $file) {
+$out = "";
 
-	$cache = $modules->get("MarkupCache");
+if(count($files)) {
+	foreach($files as $file) {
+
+		$cache = $modules->get("MarkupCache");
 	
-	// if there's no cache, store it with css url in the title
-	if(!$data = $cache->get(str_replace("/", "_", $file), $time )) {
+		// if there's no cache, store it with css url in the title
+		if(!$data = $cache->get(str_replace("/", "_", $file), $time )) {
 				
-		// read & compress css file
-		$data = compress(file_get_contents($config->paths->root . $file));
-		// save the minified CSS 
-		$cache->save($data);
+			// read & compress css file
+			$data = compress(file_get_contents($config->paths->root . $file));
+			// save the minified CSS 
+			$cache->save($data);
+		}
+	
+		$out .= $data;
 	}
-	echo $data;
 }
+
+// collect all output in buffer
+ob_start ("ob_gzhandler");
+header("Content-type: text/css; charset: UTF-8");
+header("Cache-Control: must-revalidate");
+header("Expires: " . gmdate("D, d M Y H:i:s", time() + $time) . " GMT");
+
+echo $out;
+
+// release the buffer & destroy the output
+ob_end_flush();
