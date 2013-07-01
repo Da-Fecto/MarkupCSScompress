@@ -109,11 +109,7 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 	static public function getModuleConfigInputfields(array $data) {
 
 		$inputfields = new InputfieldWrapper();
-		$inputfields->description = 
-			"Select the default options for any given feed. Each of these may be overridden in the API, " . 
-			"so the options you select below should be considered defaults, unless you only have 1 feed. " . 
-			"If you only need to support 1 feed, then you will not need to override any of these in the API.";
-
+	
 		foreach(self::$defaultConfigData as $key => $value) {
 			if(!isset($data[$key])) $data[$key] = $value; 
 		}
