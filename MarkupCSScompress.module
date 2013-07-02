@@ -9,8 +9,13 @@
  * @usage:
  *	[1] Put the MarkupCSScompress.php into the template folder.
  *	[2] Install this module.
+<<<<<<< HEAD
  *	[3] place <?php echo $modules->get('MarkupCSScompress')->render(); ?> in the head where the 
  *	    CSS link would be.
+=======
+ *	[3] place <?php echo $modules->get('MarkupCSScompress')->render(); ?> in the head
+ *		where the CSS link would be.
+>>>>>>> added install & uninstall
  *
  * @copyright Copyright (c) 2013, Martijn Geerts
  *
@@ -23,104 +28,159 @@
  */
 
 class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
-
+	
+	/**
+	 * Module pre defined settings
+	 *
+	 */
 	protected static $defaultConfigData = array(
 		'cache_time' => 3600,
 		'disabled_for_superuser' => 1,
-		'clean_href' => 1,
-		); 
-		
+		'clean_href' => 1
+		);
+	
+	/**
+	 * Provide some info
+	 *
+	 */
 	public static function getModuleInfo() {
+	
 		return array(
 			'title' => 'MarkupCSScompress',
-			'version' => 005,
+			'version' => '050',
 			'summary' => 'Combines all styles from $config->styles, compress the output and serve one link back to the browser.',
 			'author' => 'Martijn Geerts',
-			'href' => '',
+			'href' => 'http://processwire.com/talk/topic/3964-markupcsscompress/',
 			'singular' => true,
 			'autoload' => false,
-			'installs' => array('MarkupCache'),
-		);
+			'installs' => 'MarkupCache'
+			);
 	}
-
-	public $url;
-	public $cache_time;
-	protected $cssPage;
+	
+	/**
+	 * Internal storage
+	 *
+	 */
 	protected $data = array();
-	 
+	protected $url; // (string) set in init
+	protected $cssPage; // (Page object) set in init
+	
+	/**
+	 * Set the default config data to this class
+	 *
+	 */
+	public function __construct() {
+	
+		foreach (self::$defaultConfigData as $key => $value)
+			$this->set($key, $value);
+	}
+	
 	/**
 	 * Set the default config data
 	 *
 	 */
-	public function __construct() {
-		foreach(self::$defaultConfigData as $key => $value) $this->set($key, $value); 
-	}
-
 	public function init() {
+<<<<<<< HEAD
 		$urls = ""; // create empty string
 		$this->cssPage = $this->pages->get('template=MarkupCSScompress'); // page used for CSS output 
 		// loop through all $config->styles
 		foreach($this->config->styles as $style) $urls .= $style . "|";
+=======
+	
+		// page used for CSS output 
+		$this->cssPage = $this->pages->get('template=MarkupCSScompress');
+		// loop through all $config->styles
+		$urls = "";
+		foreach ($this->config->styles as $style)
+			$urls .= $style . "|";
+>>>>>>> added install & uninstall
 		// append all css urls on the end of the dynamic css file
-		$this->url =  $this->cssPage->httpUrl . "?f=" . rtrim($urls, "|") . "&t=" . $this->cache_time;
+		$this->url = $this->cssPage->url . "?f=" . rtrim($urls, "|") . "&t=" . $this->cache_time;
 	}
-
+	
+	/**
+	 * Returns the link tag
+	 *
+	 */
 	public function render() {
 		
+		$out = "";
+		// (string) path where the template should be
 		$path = wire('config')->paths->templates . get_class($this) . ".php";
+		// (mixed) null or path, depending on existence or the template
 		$path = is_file($path) ? $path : null;
+		// (bool) module setting, serve a clean or a get variable populated url
+		$clean_href = $this->clean_href;
+		// (array) array with prepopulated styles
+		$files = $this->config->styles;
+		// (int) time to live
+		$time = $this->cache_time;
+		// (bool) true if conditions met else false
+		$superuser = ($this->disabled_for_superuser == 1 && $this->user->isSuperuser()) ? true : false;
 		
+<<<<<<< HEAD
 		$out = "";
 
 		// all styles their own link.
 		if(($this->disabled_for_superuser === 1 && $this->user->isSuperuser() ) || $path === null) {
+=======
+		/**
+		 * (CSScompress disabled) all styles their own link.
+		 *
+		 */ 
+		if ($superuser || $path == null) {
+>>>>>>> added install & uninstall
 		
-			$out .= $path === null ? "<!-- Please move MarkupCSScompress.php to the ./site/templates/ folder! -->\n\n\t" : '';	
-			$out .= $this->user->isSuperuser() ? "<!--  MarkupCSScompress checkbox setting: Caching & concatenating disabled for superusers -->\n\n\t" : ""; 
+			$out .= $path == null ? "<!-- MarkupCSScompress.php doesn't exist in ./site/templates/, did you moved/copied it out of the MarkupCSScompress module folder?  -->\n\n\t" : '';
+			$out .= $superuser && $path ? "<!--  Module MarkupCSScompress: CSS compress disabled for superusers -->\n\n\t" : "";
 			
-			foreach($this->config->styles as $s) $out .= "<link rel='stylesheet' href='{$s}'>\n\t";
+			foreach ($files as $file)
+				$out .= "<link rel='stylesheet' href='{$file}'>\n\t";
+			
+			return $out;
 
-		// clean href, use sessions
-		} else if($this->clean_href == 1) {
-			// set session
+		/**
+		 * Pretty href in the link.
+		 *
+		 */ 
+		} else if ($this->clean_href == 1) {
+		
+			// set $session with files & time data
+			$this->session->set(get_class($this), array(
+				"files" => $files,
+				"time" => $time
+			));
 			
-			$array = array(
-				"files" => $this->config->styles,
-				"time" => $this->cache_time,
-				);
+			return "<link rel='stylesheet' href='{$this->cssPage->url}'>\n";
 			
-			$this->session->set(get_class($this), $array);
-			$out .= "<link rel='stylesheet' href='{$this->cssPage->httpUrl}'>\n";
-			
-		// ugly get variables in the href
 		} else {
-			$out .= "<link rel='stylesheet' href='{$this->url}'>\n";
+			// ugly link
+			return "<link rel='stylesheet' href='{$this->url}'>\n";
 		}
-		return $out;
-		
 	}
-
+	
 	/**
 	 * Module configuration screen
 	 *
 	 */
 	static public function getModuleConfigInputfields(array $data) {
-
+		
 		$inputfields = new InputfieldWrapper();
-	
-		foreach(self::$defaultConfigData as $key => $value) {
-			if(!isset($data[$key])) $data[$key] = $value; 
+		
+		foreach (self::$defaultConfigData as $key => $value) {
+			if (!isset($data[$key]))
+				$data[$key] = $value;
 		}
-
-		if(!is_file(wire('config')->paths->templates . "MarkupCSScompress.php")) {
+		
+		if (!is_file(wire('config')->paths->templates . "MarkupCSScompress.php")) {
 			$f = wire('modules')->get('InputfieldMarkup');
-			$f->set('label', sprintf(__('%s template file'), get_class($this).".php"));
-			$f->set('description', sprintf(__('There is no %1$s template in %2$s.'), get_class($this) . ".php", ".".wire('config')->urls->templates));
+			$f->set('label', sprintf(__('%s template file'), get_class($this) . ".php"));
+			$f->set('description', sprintf(__('There is no %1$s template in %2$s.'), get_class($this) . ".php", "." . wire('config')->urls->templates));
 			$f->set('value', "<span class='ui-icon ui-icon-alert' style='float: left; opacity: 0.5;'></span>");
 			$f->set('notes', "Please move the template to the templates folder");
 			$inputfields->add($f);
 		}
-
+		
 		$f = wire('modules')->get('InputfieldInteger');
 		$f->attr('id+name', 'cache_time');
 		$f->set('label', __('CSS cache expiration'));
@@ -128,63 +188,55 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		$f->set('notes', __('For example: 60 = 1 minute, 600 = 10 minutes, 3600 = 1 hour, 86400 = 1 day, 604800 = 1 week, 2419200 = 1 month.'));
 		$f->attr('value', $data['cache_time']);
 		$inputfields->add($f);
-
+		
 		$f = wire('modules')->get('InputfieldCheckbox');
 		$f->attr('id+name', 'disabled_for_superuser');
 		$f->set('label', __('Caching & concatenating disabled for superusers'));
 		$f->set('description', __('If checked, CSS files will not be combined & cached for superusers.'));
 		$f->set('notes', __('Each CSS file will have his own <link> tag.'));
-		$data['disabled_for_superuser'] ? $f->set('checked', 'checked' ) : false;
+		$data['disabled_for_superuser'] ? $f->set('checked', 'checked') : false;
 		$f->attr('value', $data['disabled_for_superuser']);
 		$inputfields->add($f);
-
+		
 		$f = wire('modules')->get('InputfieldCheckbox');
 		$f->attr('id+name', 'clean_href');
 		$f->set('label', __('Clean href'));
 		$f->set('description', __('If checked, the href of the <link> tag will not contain $_GET variables.'));
-		$f->set('notes', sprintf(__('$session->%s will be used to store the $config->styles.'),get_class($this)));
-		$data['clean_href'] ? $f->set('checked', 'checked' ) : false;
+		$f->set('notes', sprintf(__('$session->%s will be used to store the $config->styles.'), get_class($this)));
+		$data['clean_href'] ? $f->set('checked', 'checked') : false;
 		$f->attr('value', $data['clean_href']);
 		$inputfields->add($f);
-
-        return $inputfields; 
-
+		
+		return $inputfields;
 	}
 	
-
+	
 	public function ___install() {
-
+		
 		$roles = wire("roles");
 		$pages = wire("pages");
 		$config = wire("config");
 		$templates = wire("templates");
-
-		$tpl = $templates->get("MarkupCSScompress");
+					
+		$role = array();
+		$roles = $pages->get($config->rolesPageID)->children();
+		$role[] = (int) $roles->get("name=guest")->id;
 		
-		if($tpl->id == NULL) {
-
-			$role = array();
-			$roles = $pages->get($config->rolesPageID)->children(); 
-			$guestRole = $roles->get("name=guest");
-			$role[] = (int) $guestRole->id;
-
-			$fg = new fieldgroup();
-			$fg->name = "MarkupCSScompress";
-			$fg->add("title");
-			$fg->save();
-
-			$tpl = new Template();
-			$tpl->name = "MarkupCSScompress";
-			$tpl->label = "Template for the MarkupCSScompress module.";
-			$tpl->slashUrls = 0;
-			$tpl->fieldgroup = $fg;
-			$tpl->useRoles = 1;
-			$tpl->set("roles", $role);
-			$tpl->save();
-			
-		}
-
-		$linkPage = new Page(); 
+		$fg = new fieldgroup();
+		$fg->name = "MarkupCSScompress";
+		$fg->add("title");
+		$fg->save();
+		
+		$tpl = new Template();
+		$tpl->name = "MarkupCSScompress";
+		$tpl->label = "Template for the MarkupCSScompress module.";
+		$tpl->slashUrls = 0;
+		$tpl->fieldgroup = $fg;
+		$tpl->useRoles = 1;
+		$tpl->set("roles", $role);
+		$tpl->save();
+		
+		$linkPage = new Page();
 		$linkPage->template = $tpl;
 		$linkPage->parent = $pages->get($config->adminRootPageID);
 		$linkPage->name = 'styles.min.css';
@@ -194,6 +246,7 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 	}
 	
 	public function ___uninstall() {
+<<<<<<< HEAD
 	
 		$cssPages = wire('pages')->find('template.name=MarkupCSScompress');
 		if(count($cssPages)) {
@@ -203,3 +256,22 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		}				
 	}	
 }
+=======
+		
+		$pages = wire("pages");
+		$templates = wire("templates");
+		$fieldgroups = wire("fieldgroups");
+
+		$linkPage = $pages->get('parent=/processwire/, template=MarkupCSScompress, include=hidden');
+		if ($linkPage->id != null) $linkPage->delete();
+			
+		$template = $templates->get("MarkupCSScompress");
+		$fieldgroupId = (int) $template->fields->id;
+		$fieldgroup = $fieldgroups->get($fieldgroupId); 
+				
+		if ($template->id != NULL) $templates->delete($template);		
+		if ($fieldgroup->id != NULL) $fieldgroups->delete($fieldgroup);
+					
+	}
+}
+>>>>>>> added install & uninstall

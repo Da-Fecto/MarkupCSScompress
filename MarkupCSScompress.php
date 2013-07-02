@@ -75,12 +75,20 @@ if(count($files)) {
 }
 
 // collect all output in buffer
-ob_start ("ob_gzhandler");
+if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
+	ob_start("ob_gzhandler");
+} else {
+	ob_start();
+}
+
 header("Content-type: text/css; charset: UTF-8");
-header("Cache-Control: must-revalidate");
-header("Expires: " . gmdate("D, d M Y H:i:s", time() + $time) . " GMT");
+
+// Don't see any difference, leave them here for reference now
+// header("Cache-Control: must-revalidate");
+// header("Expires: " . gmdate("D, d M Y H:i:s", time() + $time) . " GMT");
 
 echo $out;
 
 // release the buffer & destroy the output
+
 ob_end_flush();
