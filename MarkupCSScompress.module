@@ -9,8 +9,8 @@
  * usage:
  *	[1] Put the MarkupCSScompress.php into the template folder.
  *	[2] Install this module.
- *	[3] place <?php $modules->get('MarkupCSScompress')->render(); ?> in the head where the 
- *		CSS link would be.
+ *	[3] place <?php echo $modules->get('MarkupCSScompress')->render(); ?> in the head where the 
+ *	    CSS link would be.
  *
  * @copyright Copyright (c) 2013, Martijn Geerts
  *
