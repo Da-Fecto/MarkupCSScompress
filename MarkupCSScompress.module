@@ -57,12 +57,9 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 	}
 
 	public function init() {
-		// page used for CSS output 
-		$this->cssPage = $this->pages->get('template=MarkupCSScompress');
-		
-		//echo $this->cssPage->title;
+		$urls = ""; // create empty string
+		$this->cssPage = $this->pages->get('template=MarkupCSScompress'); // page used for CSS output 
 		// loop through all $config->styles
-		$urls = "";
 		foreach($this->config->styles as $style) $urls .= $style . "|";
 		// append all css urls on the end of the dynamic css file
 		$this->url =  $this->cssPage->httpUrl . "?f=" . rtrim($urls, "|") . "&t=" . $this->cache_time;
@@ -74,7 +71,6 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		$path = is_file($path) ? $path : null;
 		
 		$out = "";
-
 
 		// all styles their own link.
 		if(($this->disabled_for_superuser === 1 && $this->user->isSuperuser() ) || $path === null) {
