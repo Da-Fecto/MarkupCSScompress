@@ -6,7 +6,7 @@
  * Minimize and cache all styles from $config->styles and serve 1 one CSS Page back to
  * the browser
  *
- * usage:
+ * @usage:
  *	[1] Put the MarkupCSScompress.php into the template folder.
  *	[2] Install this module.
  *	[3] place <?php echo $modules->get('MarkupCSScompress')->render(); ?> in the head where the 
