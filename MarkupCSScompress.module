@@ -6,16 +6,14 @@
  * Minimize and cache all styles from $config->styles and serve 1 one CSS Page back to
  * the browser
  *
- * @usage:
- *	[1] Put the MarkupCSScompress.php into the template folder.
- *	[2] Install this module.
-<<<<<<< HEAD
- *	[3] place <?php echo $modules->get('MarkupCSScompress')->render(); ?> in the head where the 
- *	    CSS link would be.
-=======
- *	[3] place <?php echo $modules->get('MarkupCSScompress')->render(); ?> in the head
- *		where the CSS link would be.
->>>>>>> added install & uninstall
+ * usage:
+ *
+ * [1] Put the MarkupCSScompress.php into the template folder.
+ * [2] Install this module.
+ * [3] place <?php echo $modules->get('MarkupCSScompress')->render(); ?> in the head
+ *     where the CSS link would be.
+ *
+ * note: Be shure you populated the $config->styles array.
  *
  * @copyright Copyright (c) 2013, Martijn Geerts
  *
@@ -80,12 +78,6 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 	 *
 	 */
 	public function init() {
-<<<<<<< HEAD
-		$urls = ""; // create empty string
-		$this->cssPage = $this->pages->get('template=MarkupCSScompress'); // page used for CSS output 
-		// loop through all $config->styles
-		foreach($this->config->styles as $style) $urls .= $style . "|";
-=======
 	
 		// page used for CSS output 
 		$this->cssPage = $this->pages->get('template=MarkupCSScompress');
@@ -93,7 +85,6 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		$urls = "";
 		foreach ($this->config->styles as $style)
 			$urls .= $style . "|";
->>>>>>> added install & uninstall
 		// append all css urls on the end of the dynamic css file
 		$this->url = $this->cssPage->url . "?f=" . rtrim($urls, "|") . "&t=" . $this->cache_time;
 	}
@@ -118,18 +109,11 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		// (bool) true if conditions met else false
 		$superuser = ($this->disabled_for_superuser == 1 && $this->user->isSuperuser()) ? true : false;
 		
-<<<<<<< HEAD
-		$out = "";
-
-		// all styles their own link.
-		if(($this->disabled_for_superuser === 1 && $this->user->isSuperuser() ) || $path === null) {
-=======
 		/**
 		 * (CSScompress disabled) all styles their own link.
 		 *
 		 */ 
 		if ($superuser || $path == null) {
->>>>>>> added install & uninstall
 		
 			$out .= $path == null ? "<!-- MarkupCSScompress.php doesn't exist in ./site/templates/, did you moved/copied it out of the MarkupCSScompress module folder?  -->\n\n\t" : '';
 			$out .= $superuser && $path ? "<!--  Module MarkupCSScompress: CSS compress disabled for superusers -->\n\n\t" : "";
@@ -230,7 +214,8 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		$tpl = new Template();
 		$tpl->name = "MarkupCSScompress";
 		$tpl->label = "Template for the MarkupCSScompress module.";
-		$tpl->slashUrls = 0;
+		// not (yet) compatible with Languages Support Pages Names
+		// $tpl->slashUrls = 0;
 		$tpl->fieldgroup = $fg;
 		$tpl->useRoles = 1;
 		$tpl->set("roles", $role);
@@ -246,17 +231,6 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 	}
 	
 	public function ___uninstall() {
-<<<<<<< HEAD
-	
-		$cssPages = wire('pages')->find('template.name=MarkupCSScompress');
-		if(count($cssPages)) {
-			foreach($cssPages as $p) {
-				$p->delete();	
-			}
-		}				
-	}	
-}
-=======
 		
 		$pages = wire("pages");
 		$templates = wire("templates");
@@ -269,9 +243,8 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		$fieldgroupId = (int) $template->fields->id;
 		$fieldgroup = $fieldgroups->get($fieldgroupId); 
 				
-		if ($template->id != NULL) $templates->delete($template);		
-		if ($fieldgroup->id != NULL) $fieldgroups->delete($fieldgroup);
+		if ($template->id != null) $templates->delete($template);		
+		if ($fieldgroup->id != null) $fieldgroups->delete($fieldgroup);
 					
 	}
 }
->>>>>>> added install & uninstall
