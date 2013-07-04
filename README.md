@@ -1,7 +1,5 @@
 # MarkupCSScompress
 
----
-
 #### Automaticly convert all styles in $config->styles to 1 compressed cached CSS file served to the browser.
 
 ### How to install
