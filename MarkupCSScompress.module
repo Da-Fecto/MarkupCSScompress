@@ -32,7 +32,7 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 	 *
 	 */
 	protected static $defaultConfigData = array(
-		'cache_time' => 3600,
+		'cache_time' => 86400,
 		'disabled_for_superuser' => 1,
 		'clean_href' => 1
 		);

@@ -14,6 +14,7 @@ if($modules->isInstalled('MarkupCache') == false) {
 	die();
 }
 
+// empty array to be filled with valid urls
 $files = array();
 
 // get variable doesn't exist, check for $session
@@ -34,20 +35,8 @@ if( $input->get->f === null) {
 	}
 	
 	$time = ctype_digit( $input->get->t ) ? (int) $input->get->t : 0;
-}
-
-/**
- * Simple CSS compression
- * 
- */
-function compress($css) {
-	// remove comments
-	$css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
-	// remove tabs, spaces, newlines, etc.
-	$css = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $css);
-	//remove extra single spaces
-    $css = preg_replace('/[\s]*([\{\},;:])[\s]*/', '\1', $css);
-	return $css;
+} else {
+	die("Sorry, MarkupCCScompress encountered an error.");
 }
 
 /**
@@ -57,16 +46,34 @@ function compress($css) {
 $out = "";
 
 if(count($files)) {
-	foreach($files as $file) {
-
+	foreach($files as $key => $file) {
+		
+		// create $cache object
 		$cache = $modules->get("MarkupCache");
-	
+
 		// if there's no cache, store it with css url in the title
 		if(!$data = $cache->get(str_replace("/", "_", $file), $time )) {
-				
-			// read & compress css file
-			$data = compress(file_get_contents($config->paths->root . $file));
-			// save the minified CSS 
+			 
+			// (array) put file & folders chunks in array 
+			$fragments = explode( "/", $file );
+			// (array) strip of unwanted, leave folders in array 
+			$folders = array_slice($fragments, 1, sizeof($fragments) - 2);
+			// (string) path to the CSS file, without the actual CSS file
+			$path = $config->paths->root .implode("/", $folders );
+
+			// load the Google Minify CSS class (small piece of it)
+			require_once( $config->paths->MarkupCSScompress . "Minify/CSS.php" );
+
+			$options = array(
+				'preserveComments' => false,
+				'currentDir' => $path,
+            	'prependRelativePath' => null,
+				);
+			
+			$css = new Minify_CSS;
+			$data = $css->minify(file_get_contents($config->paths->root . $file), $options);
+			
+			// save created cache
 			$cache->save($data);
 		}
 	
@@ -82,10 +89,6 @@ if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
 }
 
 header("Content-type: text/css; charset: UTF-8");
-
-// Don't see any difference, leave them here for reference now
-// header("Cache-Control: must-revalidate");
-// header("Expires: " . gmdate("D, d M Y H:i:s", time() + $time) . " GMT");
 
 echo $out;
 
