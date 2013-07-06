@@ -99,7 +99,7 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		if ($superuser || !$templatePath ) {
 		
 			$out .= !$templatePath ? "<!-- MarkupCSScompress.php doesn't exist in ./site/templates/, did you moved/copied it out of the MarkupCSScompress module folder? -->\n\n\t" : '';
-			$out .= $superuser && $path ? "<!--  Module MarkupCSScompress: CSS compress disabled for superusers -->\n\n\t" : "";
+			$out .= $superuser && $templatePath ? "<!--  Module MarkupCSScompress: CSS compress disabled for superusers -->\n\n\t" : "";
 			
 			foreach ($config->styles as $file) $out .= "<link rel='stylesheet' href='{$file}'>\n\t";
 
