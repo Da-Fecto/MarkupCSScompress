@@ -22,11 +22,10 @@ Don't forget the below steps.
 
 - CSS cache expiration *(default 1 day)*
 - Caching for superusers *(default no caching)*
-- Clean Href
 
 **By default the superuser gets the original CSS files served**
 
-Minimizing CSS is resource expensive. If you want to serve a new copy, put the cache time to 0 and enable caching for superusers. Then visit the page where the CSS get loaded. A fresh copy is served.
+Minimizing CSS is resource expensive. If you want to serve a new copy, put the cache time to 0 and enable caching for superusers. Then visit the page where the CSS get loaded. A fresh copy is served. Don't forget to put it back.
 
 - Caching is done with Ryan's **MarkupCache** Module.
 - Minifying & absoluting Urls done with Google [Minify](https://code.google.com/p/minify/) (UriRewriter.php saved me more than a headache)
