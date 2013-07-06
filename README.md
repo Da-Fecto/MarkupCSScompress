@@ -6,7 +6,7 @@ Automaticly convert all styles in $config->styles to 1 compressed cached CSS fil
 
 1. Place the module files in **/site/modules/MarkupCSScompress/**.
 2. Copy **MarkupCSScompress.php** in MarkupCSScompress folder to your **/site/templates/** folder
-3. place <?php echo $modules->get('MarkupCSScompress')->render(); ?> in the head where normally the CSS link(s) would be.
+3. place **<?php echo $modules->get('MarkupCSScompress')->render(); ?>** in the head where normally the CSS link(s) would be.
 4. In your admin, click Modules > Check for new modules
 5. Click "install" for MarkupCSScompress
 
