@@ -14,30 +14,16 @@ if($modules->isInstalled('MarkupCache') == false) {
 	die();
 }
 
-// empty array to be filled with valid urls
-$files = array();
+$array = $session->get('MarkupCSScompress');
 
 // get variable doesn't exist, check for $session
-if( $input->get->f === null) {
+if( count($array)) {
 
 	$array = $session->get('MarkupCSScompress');
 	$files = $array['files'];
 	$time = $array['time'];
 	
-// try it with $input->get
-} else if($input->get->f) {
-
-	$rawFiles = explode("|", $input->get->f);
-	// check if files exists
-	foreach($rawFiles as $file) {
-		$cssFile = $config->paths->root . ltrim($file, '/');
-		if(is_file( $cssFile )) $files[] = $file;
-	}
-	
-	$time = ctype_digit( $input->get->t ) ? (int) $input->get->t : 0;
-} else {
-	die("Sorry, MarkupCCScompress encountered an error.");
-}
+} 
 
 /**
  * Each file get it's own cache file with the URL as it's name.

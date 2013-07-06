@@ -4,16 +4,19 @@
 
 ### How to install
 
-1. Place the module files in /site/modules/MarkupCSScompress/
-2. copy MarkupCSScompress.php in MarkupCSScompress folder to your /site/templates/ folder
+1. Place the module files in **/site/modules/MarkupCSScompress/**.
+2. Copy **MarkupCSScompress.php** in MarkupCSScompress folder to your **/site/templates/** folder
 3. place <?php echo $modules->get('MarkupCSScompress')->render(); ?> in the head where normally the CSS link(s) would be.
 4. In your admin, click Modules > Check for new modules
 5. Click "install" for MarkupCSScompress
 
+Don't forget the below steps.
+
 *Put this in the head*
 `<?php echo $modules->get('MarkupCSScompress')->render(); ?>`
 
-*Don't forget to move "MarkupCSScompress.php"*
+*Move/Copy*
+*MarkupCSScompress.php to templates*
 
 ### Settings
 
