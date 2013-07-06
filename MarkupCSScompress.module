@@ -192,6 +192,8 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		$pages = wire("pages");
 		$config = wire("config");
 		$templates = wire("templates");
+
+
 		
 		$fg = new fieldgroup();
 		$fg->name = "MarkupCSScompress";
@@ -207,7 +209,13 @@ class MarkupCSScompress extends WireData implements Module, ConfigurableModule {
 		$tpl->noGlobal = 1;
 		$tpl->useRoles = 1;
 		// needs array of role id's
-		$tpl->roles = array($config->guestUserPageID);
+		$guest_id = (int) $pages->get("template=guest, name=guest")->id;
+
+		$roles = $pages->get($config->rolesPageID)->children(); 
+		$guestRole = $roles->get("name=guest");
+		$role[] = (int) $guestRole->id;
+		
+		$tpl->set("roles", $role);
 		// needs array of template id's
 		$tpl->parentTemplates = array($config->adminRootPageID);
 		$tpl->flags = Template::flagSystem; // needs Template::flagSystemOverride to disable
