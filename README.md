@@ -1,6 +1,6 @@
 # MarkupCSScompress
 
-#### Automaticly convert all styles in $config->styles to 1 compressed cached CSS file served to the browser.
+Automaticly convert all styles in $config->styles to 1 compressed cached CSS file served to the browser.
 
 ### How to install
 
@@ -10,14 +10,6 @@
 4. In your admin, click Modules > Check for new modules
 5. Click "install" for MarkupCSScompress
 
-Don't forget the below steps.
-
-*Put this in the head*
-`<?php echo $modules->get('MarkupCSScompress')->render(); ?>`
-
-*Move/Copy*
-*MarkupCSScompress.php to templates*
-
 ### Settings
 
 - CSS cache expiration *(default 1 day)*
@@ -25,7 +17,7 @@ Don't forget the below steps.
 
 **By default the superuser gets the original CSS files served**
 
-Minimizing CSS is resource expensive. If you want to serve a new copy, put the cache time to 0 and enable caching for superusers. Then visit the page where the CSS get loaded. A fresh copy is served. Don't forget to put it back.
+Minimizing CSS is resource expensive. If you want to serve a new copy, put the cache time to 0 and enable caching for superusers. Then visit the page where the CSS get loaded. A fresh copy is served. Don't forget to put the cache back in it's original glory.
 
 - Caching is done with Ryan's **MarkupCache** Module.
 - Minifying & absoluting Urls done with Google [Minify](https://code.google.com/p/minify/) (UriRewriter.php saved me more than a headache)
