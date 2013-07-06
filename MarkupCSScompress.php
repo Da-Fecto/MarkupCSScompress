@@ -1,17 +1,10 @@
 <?php
 
-// check if MarkupCSScompress is installed.
-if($modules->isInstalled('MarkupCSScompress') == false) {
-	echo "<h1>Oops.</h1";	
-	echo "<p>This file can only be used in collaboration with MarkupCSScompress.</p>";	
-	die();
-}
-
-// check if MarkupCache is installed.
-if($modules->isInstalled('MarkupCache') == false) {
-	echo "body { background: red;}";	
-	echo "body:after { content: 'MarkupCSScomress needs MarkupCache to be installed.'; color: #FFF;}";	
-	die();
+// check if required Modules
+foreach(array('MarkupCache','MarkupCSScompress') as $ClassName) {
+	if(!$modules->isInstalled($ClassName)) {
+		$modules->get($ClassName); // install
+	}
 }
 
 $array = $session->get('MarkupCSScompress');
