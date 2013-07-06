@@ -13,7 +13,7 @@ Automaticly convert all styles in $config->styles to 1 compressed cached CSS fil
 ### Settings
 
 - CSS cache expiration *(default 1 day)*
-- Caching for superusers *(default no caching)*
+- Caching for superusers *(default no caching, original files served)*
 
 **By default the superuser gets the original CSS files served**
 
